@@ -12,5 +12,5 @@ public interface MovieApiService {
     @GET("movie/{type}")
     Call<MovieApiResponseVO> getMoviesType(
             @Path("type") String type ,
-            @Query("page") int page);
+            @Query("page") long page);
 }

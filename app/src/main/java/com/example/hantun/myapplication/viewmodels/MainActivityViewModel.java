@@ -1,38 +1,32 @@
 package com.example.hantun.myapplication.viewmodels;
 
-import android.icu.util.LocaleData;
-import android.util.Log;
-
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import androidx.paging.LivePagedListBuilder;
+import androidx.paging.PagedList;
 
-import com.example.hantun.myapplication.data.remote.OnGetMoviesCallback;
-import com.example.hantun.myapplication.data.remote.modelVO.MovieApiResponseVO;
+import com.example.hantun.myapplication.data.datasource.MovieTypeDataSource;
+import com.example.hantun.myapplication.data.datasource.MovieTypeDataSourceFactorty;
 import com.example.hantun.myapplication.data.remote.modelVO.MovieTypeVO;
-import com.example.hantun.myapplication.data.repository.MoviesRepository;
-
-import java.util.List;
 
 public class MainActivityViewModel extends ViewModel {
-    private MutableLiveData<List<MovieTypeVO>> movieTypeList = new MutableLiveData<>();
-    private MoviesRepository moviesRepository;
+    public LiveData<PagedList<MovieTypeVO>> movieTypeList ;
+    private MutableLiveData<MovieTypeDataSource> movieTypeDataSource = new MutableLiveData<>();
 
-    public void fetchMovieType(int page){
-        moviesRepository = MoviesRepository.getInstance();
-        moviesRepository.getMovies(page , new OnGetMoviesCallback() {
-            @Override
-            public void onSuccess(int page, List<MovieTypeVO> movies) {
-                movieTypeList.setValue(movies);
-            }
-
-            @Override
-            public void onError() {
-                Log.d("error" , "error");
-            }
-        });
+    public MainActivityViewModel() {
+        init();
     }
-    public MutableLiveData<List<MovieTypeVO>> getMovieType(){
-        return movieTypeList;
+    private void init(){
+        MovieTypeDataSourceFactorty movieTypeDataSourceFactorty = new MovieTypeDataSourceFactorty();
+        movieTypeDataSource = movieTypeDataSourceFactorty.movieTypeDataSourceMutableLiveData;
+
+        PagedList.Config config = new PagedList.Config.Builder()
+                .setEnablePlaceholders(false)
+                .setPageSize(MovieTypeDataSource.PAGE_SIZE)
+                .build();
+
+        movieTypeList = new LivePagedListBuilder<>(movieTypeDataSourceFactorty , config).build();
 
     }
 
