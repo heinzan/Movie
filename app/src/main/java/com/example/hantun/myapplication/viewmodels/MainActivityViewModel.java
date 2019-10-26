@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
 
-import com.example.hantun.myapplication.data.datasource.MovieTypeDataSource;
-import com.example.hantun.myapplication.data.datasource.MovieTypeDataSourceFactorty;
+import com.example.hantun.myapplication.data.paging.MovieTypeDataSource;
+import com.example.hantun.myapplication.data.paging.MovieTypeDataSourceFactorty;
 import com.example.hantun.myapplication.data.remote.modelVO.MovieTypeVO;
 
 public class MainActivityViewModel extends ViewModel {
@@ -22,13 +22,14 @@ public class MainActivityViewModel extends ViewModel {
         movieTypeDataSource = movieTypeDataSourceFactorty.movieTypeDataSourceMutableLiveData;
 
         PagedList.Config config = new PagedList.Config.Builder()
-                .setEnablePlaceholders(false)
+                .setEnablePlaceholders(true)
                 .setPageSize(MovieTypeDataSource.PAGE_SIZE)
                 .build();
 
         movieTypeList = new LivePagedListBuilder<>(movieTypeDataSourceFactorty , config).build();
 
     }
+
 
 
 

@@ -27,6 +27,8 @@ public class MainActivity extends BaseActivity {
     private RecyclerView mRecyclerView;
     private HomeAdapter mHomeAdapter;
     private GridLayoutManager glm;
+    private MainActivityViewModel mMainActivityViewModel;
+    private List<MovieTypeVO> movieList;
 
 
     @Override
@@ -35,17 +37,19 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         mRecyclerView = findViewById(R.id.rvMovieType);
         glm = new GridLayoutManager(this, 2);
-        mHomeAdapter = new HomeAdapter();
+        mHomeAdapter = new HomeAdapter(movieList , this);
         mRecyclerView.setLayoutManager(glm);
         mRecyclerView.setHasFixedSize(true);
-        MainActivityViewModel mMainActivityViewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
+         mMainActivityViewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
         mMainActivityViewModel.movieTypeList.observe(this, new Observer<PagedList<MovieTypeVO>>() {
             @Override
             public void onChanged(PagedList<MovieTypeVO> movieTypeVOS) {
+                movieList = movieTypeVOS;
                 mHomeAdapter.submitList(movieTypeVOS);
             }
         });
 
         mRecyclerView.setAdapter(mHomeAdapter);
     }
+
 }

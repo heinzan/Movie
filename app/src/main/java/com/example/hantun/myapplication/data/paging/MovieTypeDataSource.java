@@ -1,4 +1,4 @@
-package com.example.hantun.myapplication.data.datasource;
+package com.example.hantun.myapplication.data.paging;
 
 import androidx.annotation.NonNull;
 import androidx.paging.PageKeyedDataSource;
@@ -10,13 +10,14 @@ import com.example.hantun.myapplication.data.remote.modelVO.MovieApiResponseVO;
 import com.example.hantun.myapplication.data.remote.modelVO.MovieTypeVO;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MovieTypeDataSource extends PageKeyedDataSource<Long , MovieTypeVO> {
-    public static int PAGE_SIZE = 10;
+    public static int PAGE_SIZE = 20;
     public static long FIRST_PAGE = 1;
     MovieApiService apiService = RetrofitBuilder.buildService(MovieApiService.class);
     @Override
@@ -29,7 +30,7 @@ public class MovieTypeDataSource extends PageKeyedDataSource<Long , MovieTypeVO>
                 MovieApiResponseVO movieApiResponseVO = response.body();
                 if(movieApiResponseVO != null){
                     List<MovieTypeVO> movieTypeVOS = movieApiResponseVO.getResults();
-                    callback.onResult(movieTypeVOS , null , FIRST_PAGE+1);
+                    callback.onResult(movieTypeVOS , FIRST_PAGE , FIRST_PAGE+1);
                 }
             }
 
@@ -42,19 +43,15 @@ public class MovieTypeDataSource extends PageKeyedDataSource<Long , MovieTypeVO>
 
     @Override
     public void loadBefore(@NonNull final LoadParams<Long> params, @NonNull final LoadCallback<Long, MovieTypeVO> callback) {
-        Call<MovieApiResponseVO> call = apiService.getMoviesType(AppConstants.TYPE_POPULAR ,params.key);
+      /*  Call<MovieApiResponseVO> call = apiService.getMoviesType(AppConstants.TYPE_POPULAR ,params.key);
         call.enqueue(new Callback<MovieApiResponseVO>() {
             @Override
             public void onResponse(Call<MovieApiResponseVO> call, Response<MovieApiResponseVO> response) {
                 MovieApiResponseVO movieApiResponseVO = response.body();
                 if(movieApiResponseVO != null){
                     List<MovieTypeVO> movieTypeVOS = movieApiResponseVO.getResults();
-                    long key;
-                    if(params.key >1){
-                        key = params.key-1;
-                    }else{
-                        key = 0;
-                    }
+                    long key = (params.key > 1) ? (params.key -1) : 0;
+
                     callback.onResult(movieTypeVOS , key);
                 }
             }
@@ -63,7 +60,7 @@ public class MovieTypeDataSource extends PageKeyedDataSource<Long , MovieTypeVO>
             public void onFailure(Call<MovieApiResponseVO> call, Throwable t) {
 
             }
-        });
+        });*/
     }
 
     @Override
